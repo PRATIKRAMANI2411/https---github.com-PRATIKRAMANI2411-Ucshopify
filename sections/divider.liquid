@@ -1,0 +1,26 @@
+<!-- Divider Section-->
+<section style="background: url({{section.settings.background_image | img_url : '2048x'}});" class="divider">
+    <div class="container">
+        <div class="row">
+            {{section.settings.slide_textarea}}
+        </div>
+    </div>
+</section>
+
+{% schema %}
+{
+    "name": "divider",
+    "settings": [
+        {
+            "id": "background_image",
+            "type": "image_picker",
+            "label": "Background Image"
+        },
+        {
+            "id": "slide_textarea",
+            "type": "textarea",
+            "label": "Slide Text"
+        }
+    ]
+}
+{% endschema %}

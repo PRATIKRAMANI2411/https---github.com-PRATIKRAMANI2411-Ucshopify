@@ -1,0 +1,181 @@
+{% paginate collection.products by 9 %}
+{% assign page_count = paginate.pages %}
+    
+<!-- Hero Section-->
+<section class="hero hero-page gray-bg padding-small">
+    <div class="container">
+        <div class="row d-flex">
+            <div class="col-lg-9 order-2 order-lg-1">
+                <h1>{{collection.title}}</h1>
+                <p class="lead text-muted">{{collection.description}}</p>
+            </div>
+            <div class="col-lg-3 text-right order-1 order-lg-2">
+                <ul class="breadcrumb justify-content-lg-end">
+                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                    <li class="breadcrumb-item active">{{collection.title}}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<main>
+    <div class="container">
+        <div class="row">
+            <!-- Sidebar-->
+            <div class="sidebar col-xl-3 col-lg-4 sidebar">
+                <div class="block">
+                    <h6 class="text-uppercase">Product Categories</h6>
+                    <ul class="list-unstyled">
+                        {% for link in linklists[section.settings.collection_sidebar].links %}
+                            <li>
+                                <a href="{{link.title}}" class="d-flex justify-content-between align-items-center">
+                                    <span>{{link.title}}</span><small>{{collections[link.title].products_count}}</small>
+                                </a>
+                                <ul class="list-unstyled">
+                                    {% for childlink in link.links %}
+                                        <li> <a href="{{ childlink.url }}">{{childlink.title}}</a></li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="block">
+                    <h6 class="text-uppercase">Filter By Price </h6>
+                    <div id="slider-snap"></div>
+                    <div class="value d-flex justify-content-between">
+                        <div class="min">From <span id="slider-snap-value-lower" class="example-val"></span>$</div>
+                        <div class="max">To <span id="slider-snap-value-upper" class="example-val"></span>$</div>
+                    </div><a href="#" class="filter-submit">filter</a>
+                </div>
+                <div class="block">
+                    <h6 class="text-uppercase">Brands </h6>
+
+                    <form action="#">
+                        <div class="form-group mb-1">
+                            <input id="brand0" type="checkbox" name="clothes-brand" checked class="checkbox-template">
+                            <label for="brand0">Calvin Klein <small>(18)</small></label>
+                        </div>
+                        <div class="form-group mb-1">
+                            <input id="brand1" type="checkbox" name="clothes-brand" checked class="checkbox-template">
+                            <label for="brand1">Levi Strauss <small>(30)</small></label>
+                        </div>
+                        <div class="form-group mb-1">
+                            <input id="brand2" type="checkbox" name="clothes-brand" class="checkbox-template">
+                            <label for="brand2">Hugo Boss <small>(120)</small></label>
+                        </div>
+                        <div class="form-group mb-1">
+                            <input id="brand3" type="checkbox" name="clothes-brand" class="checkbox-template">
+                            <label for="brand3">Tomi Hilfiger <small>(70)</small></label>
+                        </div>
+                        <div class="form-group mb-1">
+                            <input id="brand4" type="checkbox" name="clothes-brand" class="checkbox-template">
+                            <label for="brand4">Tom Ford <small>(110)</small></label>
+                        </div>
+                    </form>
+                </div>
+                <div class="block">
+                    <h6 class="text-uppercase">Size </h6>
+                    {% capture colection_path %}
+                        /collections/{% if colection.hendle.size > 0 %}{{collection.hendle}}{% else %}all{% endif %}/
+                    {% endcapture %}
+                    <form action="#">
+                        <div class="form-group mb-1">
+                            <input id="size0" type="radio" name="size" {% if current_tags contains "size_small" %}checked{% endif %}
+                                class="radio-template" onclick="window.location = '{{ colection_path | strip | append: 'size_small' }}';">
+                            <label for="size0">Small</label>
+                        </div>
+                        <div class="form-group mb-1">
+                            <input id="size1" type="radio" name="size" {% if current_tags contains "size_medium" %}checked{% endif %} class="radio-template" onclick="window.location = '{{ colection_path | strip | append: 'size_medium' }}';">
+                            <label for="size1">Medium</label>
+                        </div>
+                        <div class="form-group mb-1">
+                            <input id="size2" type="radio" name="size" {% if current_tags contains "size_large" %}checked{% endif %} class="radio-template" onclick="window.location = '{{ colection_path | strip | append: 'size_large' }}';">
+                            <label for="size2">Large</label>
+                        </div>
+                        <div class="form-group mb-1">
+                            <input id="size3" type="radio" name="size" {% if current_tags contains "size_xlarge" %}checked{% endif %} class="radio-template" onclick="window.location = '{{ colection_path | strip | append: 'size_xlarge' }}';">
+                            <label for="size3">X-Large</label>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- /Sidebar end-->
+            <!-- Grid -->
+            <div class="products-grid col-xl-9 col-lg-8 sidebar-left">
+                <header class="d-flex justify-content-between align-items-start">
+                    {% assign page_beginnig = paginate.current_offset | plus: 1 %}
+                    {% assign page_ending = page_beginnig | plus: collection.products.size | minus: 1 %}
+
+                    <span class="visible-items">Showing <strong>{{page_beginnig}}-{{page_ending}} </strong>of <strong>{{collection.products_count}}</strong>results</span>
+                    <select id="sorting" class="bs-select">
+                        {% for option in collection.sort_options %}
+                            <option value="{{ option.value }}">{{ option.name }}</option>
+                        {% endfor %}
+                    </select>
+                </header>
+                <div class="row">
+                    <!-- item-->
+                    {% for product in collection.products %}
+                        <div class="item col-xl-4 col-md-6">
+                            <div class="product is-gray">
+                                <div class="image d-flex align-items-center justify-content-center">
+                                    
+                                    <img src="{{product.featured_image | img_url: '2048x' }}" alt="product" class="img-fluid">
+                                    <div class="hover-overlay d-flex align-items-center justify-content-center">
+                                        <div class="CTA d-flex align-items-center justify-content-center">
+                                            <a href="#" class="add-to-cart"><i class="fa fa-shopping-cart"></i></a>
+                                            <a href="{{product.url}}" class="visit-product active"><i class="icon-search"></i>View</a>
+                                            <a href="#" data-toggle="modal" data-target="#exampleModal" class="quick-view"><i class="fa fa-arrows-alt"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="title"><small class="text-muted">{{collection.title}}</small><a href="{{product.url}}">
+                                        <h3 class="h6 text-uppercase no-margin-bottom">{{product.title}}</h3>
+                                    </a><span class="price text-muted">{{product.price | money}}</span></div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <nav aria-label="page navigation example" class="d-flex justify-content-center">
+                    <ul class="pagination pagination-custom">
+                        <li class="page-item">
+                            <a href="{{paginate.previous.url}}" aria-label="Previous" class="page-link"><span  aria-hidden="true">Prev</span><span class="sr-only">Previous</span></a>
+                        </li>
+
+                        {% for part in (1..page_count) %}
+                            {% if collection.current_page == part %}
+                                {% assign active_class = 'active' %}
+                            {% else %}
+                                {% assign active_class = '' %}
+                            {% endif %}
+                            <li class="page-item"><a href="{{collection.url}}?page={{forloop.index}}" class="page-link {{active_class}}">{{forloop.index}}</a></li>
+                        {% endfor %}
+
+                        <li class="page-item">
+                            <a href="{{paginate.next.url}}" aria-label="Next" class="page-link"><span aria-hidden="true">Next</span><span class="sr-only">Next </span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <!-- / Grid End-->
+        </div>
+    </div>
+</main>
+{% endpaginate %}
+
+{% schema %}
+
+{
+    "name": "collection",
+    "settings":[
+        {
+            "id": "collection_sidebar",
+            "type": "link_list",
+            "label": "Collection Sidebar"
+        }
+    ]
+}
+{% endschema %}

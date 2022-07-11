@@ -1,0 +1,72 @@
+<!-- Hero Section-->
+<section class="hero hero-page gray-bg padding-small">
+  <div class="container">
+    <div class="row d-flex">
+      <div class="col-lg-9 order-2 order-lg-1">
+        <h1>Shopping cart</h1>
+        <p class="lead text-muted">You currently have {{cart.item_count}} items in your shopping cart</p>
+      </div>
+      <div class="col-lg-3 text-right order-1 order-lg-2">
+        <ul class="breadcrumb justify-content-lg-end">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item active">Shopping cart</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Shopping Cart Section-->
+<form method="post" action="/cart">
+  <section class="shopping-cart">
+    <div class="container">
+      <div class="basket">
+        <div class="basket-holder">
+          <div class="basket-header">
+            <div class="row">
+              <div class="col-5">Product</div>
+              <div class="col-2">Price</div>
+              <div class="col-2">Quantity</div>
+              <div class="col-2">Total</div>
+              <div class="col-1 text-center">Remove</div>
+            </div>
+          </div>
+          <div class="basket-body">
+            <!-- Product-->
+            {% for line_item in cart.items %}
+              <div class="item">
+                <div class="row d-flex align-items-center">
+                  <div class="col-5">
+                    <div class="d-flex align-items-center"><img src="{{line_item.image | img_url: '2048x'}}" alt="..." class="img-fluid">
+                      <div class="title"><a href="{{line_item.url}}">
+                          <h5>{{line_item.product.title}}</h5><span class="text-muted">Size: {{line_item.variant.title}}</span>
+                        </a></div>
+                    </div>
+                  </div>
+                  <div class="col-2"><span>{{line_item.original_price | money}}</span></div>
+                  <div class="col-2">
+                    <div class="d-flex align-items-center">
+                      <div class="quantity d-flex align-items-center">
+                        <div class="dec-btn">-</div>
+                        <input type="text" name="updates[]" value="{{line_item.quantity}}" class="quantity-no">
+                        <div class="inc-btn">+</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-2"><span>{{line_item.line_price | money}}</span></div>
+                  <div class="col-1 text-center">
+                    <a href="/cart/change?line={{forloop.index}}&quantity=0" class="delete"><i class="fa fa-trash-o"></i></a>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="CTAs d-flex align-items-center justify-content-center justify-content-md-end flex-column flex-md-row">
+          <a href="/" class="btn btn-template-outlined wide">Continue Shopping</a>
+          <button class="btn btn-template wide">Update Cart</button></div>
+    </div>
+  </section>
+</form>
